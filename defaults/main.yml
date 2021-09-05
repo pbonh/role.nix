@@ -1,0 +1,23 @@
+download_directory: "{{ ansible_env.HOME }}/.downloads"
+nix_installer_version: "2.3.15"
+nix_installer_url: "https://releases.nixos.org/nix/nix-{{ nix_installer_version }}"
+nix_installer_download: "{{ download_directory }}/install-nix-{{ nix_installer_version }}"
+nix_gnupg_key: B541D55301270E0BCF15CA5D8170B4726D7198DE
+nix_install_location: "/nix"
+
+base_repositories:
+  - "deb http://deb.debian.org/debian/ testing main contrib non-free"
+  - "deb-src http://deb.debian.org/debian/ testing main contrib non-free"
+  - "deb http://security.debian.org/debian-security testing-security main"
+  - "deb-src http://security.debian.org/debian-security testing-security main"
+
+base_packages:
+  - aptitude
+  - curl
+  - wget
+  - apt-transport-https
+  - ca-certificates
+  - gnupg2
+  - software-properties-common
+  - guake
+  - postgresql-client
