@@ -6,6 +6,13 @@
     name: gnupg2
     state: latest
 
+- name: Install Unzip
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  become: yes
+  apt:
+    name: unzip
+    state: latest
+
 - name: Create Download Directory
   file:
     path: "{{ download_directory }}"
