@@ -13,6 +13,13 @@
     name: unzip
     state: latest
 
+- name: Install Build Essentials
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  become: yes
+  apt:
+    name: build-essential
+    state: latest
+
 - name: Create Download Directory
   file:
     path: "{{ download_directory }}"
