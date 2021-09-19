@@ -2,6 +2,7 @@
 - name: Run "apt-get update"
   become: yes
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  changed_when: false
   apt:
     update_cache: yes
 
