@@ -1,0 +1,51 @@
+---
+- name: Download Nix Installer
+  get_url:
+    url: "{{ nix_installer_url }}/install"
+    dest: "{{ nix_installer_download }}"
+
+- name: Download Nix Installer Key
+  get_url:
+    url: "{{ nix_installer_url }}/install.asc"
+    dest: "{{ nix_installer_download }}.asc"
+
+- name: Download Nix GPG Public Key
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  copy:
+    dest: "{{ download_directory }}/nix.gpg.txt"
+    content: |
+      {{ nix_gnupg_key }}
+
+- name: Add Nix Key to GnuPG
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  changed_when: false
+  command: "gpg2 --recv-keys {{ nix_gnupg_key }}"
+  args:
+    chdir: "{{ download_directory }}"
+
+- name: Add Nix Key to GnuPG
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  changed_when: false
+  command: "gpg2 --import {{ nix_installer_download }}.asc"
+  args:
+    chdir: "{{ download_directory }}"
+
+- name: Verify Installer Download
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  changed_when: false
+  ignore_errors: yes
+  command: "gpg2 --verify {{ nix_installer_download }}.asc {{ nix_installer_download }}"
+  args:
+    chdir: "{{ download_directory }}"
+
+- name: Make Nix Installer Executable
+  file:
+    dest: "{{ nix_installer_download }}"
+    mode: +x
+
+- name: Install Nix
+  become: yes
+  script:
+    cmd: "{{ nix_installer_download }}"
+  args:
+    creates: "{{ nix_install_location }}"
